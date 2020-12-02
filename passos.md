@@ -61,3 +61,34 @@ Refatoramos o controler para mapear os dois tipos de Books.
 para isso usamos o ModelMapper.
 
 Pelo fato dele não ser gerenciado pelo Spring nos usaremos um @Bean para fazer isso diretamente na aplicação principal. Isso ira criar um Singleton para servir toda a aplicação, da hora né?
+
+## Criando teste para camada de serviços
+
+Similar ao teste controler, criamos a pasta e a classe de teste.
+/service/BookServiceTeste
+
+implementamos o o primeiro teste com um service que ainda não foi criado, somente interface, então da erro de nulpointerexception.
+
+Usamos o BeforeEach para setar o serviço antes de cada teste.
+
+# Service
+
+1. criar a classe BookService para implementar a interface.
+    @Service da ao springBoot a responabilidade de gerenciar essa camada.
+2. Criar o RepositoryBookService.
+3. utilizar o mockito para os testes.
+
+@mockito.when()
+
+# Teste de Validação dos dados Controller
+Criamos um mock vazio e rodamos, o teste não passou pois o Mapper não aceita objetos vazios.
+
+## Criar validação no DTO.
+
+No file dto adicionamos o @NotEmpty a cada prop.
+No controller adicionamos o @valid ao objeto passado na chamada post.
+
+Não deu certo.
+
+Passei pra criação da ApiErros. 
+
