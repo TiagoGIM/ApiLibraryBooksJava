@@ -30,4 +30,14 @@ public class BookService implements IBookService {
     public Optional<Book> getById(Long id){
         return Optional.empty();
     }
+    
+    @Override
+    public void delete(Book book){
+        repository.delete(book);
+    }
+
+    @Override
+    public Book update(Book book){
+        return repository.save(book);
+    }
 }

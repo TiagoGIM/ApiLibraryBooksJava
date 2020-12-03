@@ -9,4 +9,8 @@ public interface IBookService {
 	Book save(Book any);
 	
     Optional<Book> getById(Long id); //Optional testa se é null
+
+    void delete(Book book);
+
+    Book update(Book book);
 }
