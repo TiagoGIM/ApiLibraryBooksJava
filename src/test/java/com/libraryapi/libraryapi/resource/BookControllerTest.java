@@ -183,7 +183,7 @@ public class BookControllerTest {
       .id(id)
       .title("some book")
       .author("some guy")
-      .isbn("123")
+      .isbn("1213212")
       .build();
     
       BDDMockito.given(service.getById(id)).willReturn(Optional.of(updatingBook));
