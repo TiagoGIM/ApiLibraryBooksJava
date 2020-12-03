@@ -4,6 +4,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.libraryapi.libraryapi.dto.BookDto;
 import com.libraryapi.libraryapi.exceptions.BusinessException;
@@ -97,7 +99,46 @@ public class BookControllerTest {
       .andExpect(jsonPath("errors[0]").value(msgError))
       ;
   }
+  @Test
+  @DisplayName("Deve obter infos de um livro by id")
+  public void getBookDetailsByidTest() throws Exception{
+    //cenario (given)
+    Long id=1L;
+    Book book =Book.builder()
+      .id(id)
+      .title(createNewBook().getTitle())
+      .author(createNewBook().getAuthor())
+      .isbn(createNewBook().getIsbn())
+      .build();
 
+    BDDMockito.given(service.getById(id)).willReturn(Optional.of(book));
+    //execucao (when)
+    MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+      .get(BOOK_APP.concat("/"+id))
+      .accept(MediaType.APPLICATION_JSON);
+
+      mvc.perform(request)
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("id").value(id))
+        .andExpect(jsonPath("title").value(createNewBook().getTitle()))
+        .andExpect(jsonPath("author").value(createNewBook().getAuthor()))
+        .andExpect(jsonPath("isbn").value(createNewBook().getIsbn()));
+  }
+  @Test
+  @DisplayName("Deve retornar resource notFound quando o livro nao existir")
+  public void canNotFindThisBookTest() throws Exception{
+    //cenario
+    Long id=1L;
+    BDDMockito.given(service.getById(id)).willReturn(Optional.empty());
+    //execucao (when)
+    MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+      .get(BOOK_APP.concat("/"+id))
+      .accept(MediaType.APPLICATION_JSON);
+
+      mvc.perform(request)
+      .andExpect(status().isNotFound());
+
+  }
   private BookDto createNewBook(){
     return BookDto
     .builder()
