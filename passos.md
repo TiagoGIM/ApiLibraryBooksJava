@@ -92,3 +92,6 @@ Não deu certo.
 
 Passei pra criação da ApiErros. 
 
+criar handler de api e handler de business
+, implementar handler no controler.
+

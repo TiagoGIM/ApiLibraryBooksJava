@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.libraryapi.libraryapi.dto.BookDto;
+import com.libraryapi.libraryapi.exceptions.BusinessException;
 import com.libraryapi.libraryapi.model.Book;
 import com.libraryapi.libraryapi.service.IBookService;
 
@@ -53,7 +54,8 @@ public class BookControllerTest {
 
     MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(BOOK_APP)
         .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(json);
-    mvc.perform(request).andExpect(status().isCreated()).andExpect(jsonPath("id").value(0L))
+    mvc.perform(request).andExpect(status().isCreated())
+        .andExpect(jsonPath("id").value(0L))
         .andExpect(jsonPath("title").value(dto_mock.getTitle()))
         .andExpect(jsonPath("author").value(dto_mock.getAuthor()))
         .andExpect(jsonPath("isbn").value(dto_mock.getIsbn()));
@@ -65,16 +67,43 @@ public class BookControllerTest {
 
     String json = new ObjectMapper().writeValueAsString(new BookDto());
 
-    MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-        .post(BOOK_APP)
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON)
-        .content(json);
+    MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(BOOK_APP)
+        .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).content(json);
 
     mvc.perform(request)
       .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("errors", hasSize(3)))
-    ;
+      .andExpect(jsonPath("errors", hasSize(3)));
+  }
 
+  @Test
+  @DisplayName("Lança error ao tentar cadastrar isbn existente")
+  public void createBookWithDuplicatedIsbn() throws Exception {
+
+    BookDto bookValido = createNewBook();
+    String json = new ObjectMapper().writeValueAsString(bookValido);
+    String msgError = "Isbn já cadastrado";
+    BDDMockito.given(service.save(Mockito.any(Book.class)))
+      .willThrow(new BusinessException(msgError));
+
+    MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+      .post(BOOK_APP)
+      .contentType(MediaType.APPLICATION_JSON)
+      .accept(MediaType.APPLICATION_JSON)
+      .content(json);
+
+    mvc.perform(request)
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("errors", hasSize(1)))
+      .andExpect(jsonPath("errors[0]").value(msgError))
+      ;
+  }
+
+  private BookDto createNewBook(){
+    return BookDto
+    .builder()
+    .author("Author")
+    .isbn("1213212")
+    .title("AS aventuras de Pi")
+    .build();
   }
 }

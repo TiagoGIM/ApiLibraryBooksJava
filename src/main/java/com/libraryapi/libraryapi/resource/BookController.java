@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import com.libraryapi.libraryapi.dto.BookDto;
 import com.libraryapi.libraryapi.exceptions.ApiErrors;
+import com.libraryapi.libraryapi.exceptions.BusinessException;
 import com.libraryapi.libraryapi.model.Book;
 import com.libraryapi.libraryapi.service.IBookService;
 
@@ -46,5 +47,10 @@ public class BookController {
   public ApiErrors handleValidationExcepitions(MethodArgumentNotValidException e) {
     BindingResult bindingResult = e.getBindingResult();
     return new ApiErrors(bindingResult);
+  }
+  @ExceptionHandler(BusinessException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ApiErrors handleBusinessException(BusinessException ex){
+    return new ApiErrors(ex);
   }
 }

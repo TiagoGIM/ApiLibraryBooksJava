@@ -1,5 +1,6 @@
 package com.libraryapi.libraryapi.service;
 
+import com.libraryapi.libraryapi.exceptions.BusinessException;
 import com.libraryapi.libraryapi.model.Book;
 import com.libraryapi.libraryapi.repository.RepositoryBook;
 
@@ -17,6 +18,9 @@ public class BookService implements IBookService {
 
     @Override
     public Book save(Book book){
+        if (repository.existsByIsbn(book.getIsbn())){
+            throw new BusinessException("Isbn já cadastrado");
+        }
         return repository.save(book);
     }
 }
