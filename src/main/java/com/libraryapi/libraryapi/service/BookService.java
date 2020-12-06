@@ -28,16 +28,23 @@ public class BookService implements IBookService {
 
     @Override
     public Optional<Book> getById(Long id){
-        return Optional.empty();
+        //implementar tratamento OptionalEmpty
+        return this.repository.findById(id);
     }
     
     @Override
     public void delete(Book book){
+        if (book == null || book.getId() == null){
+            throw new IllegalArgumentException("Book id can't be null");
+        }
         repository.delete(book);
     }
 
     @Override
     public Book update(Book book){
+        if (book == null || book.getId() == null){
+            throw new IllegalArgumentException("Book id can't be null");
+        }
         return repository.save(book);
     }
 }

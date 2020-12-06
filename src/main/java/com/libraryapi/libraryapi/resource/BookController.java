@@ -70,7 +70,7 @@ public class BookController {
     ;
     book.setAuthor(dto.getAuthor()); // a treta ta aqui 
     book.setTitle(dto.getTitle()); //esses metodos tao retornando null
-    service.update(book);
+    book = service.update(book);
     return modelMapper.map(book, BookDto.class);
   }
 

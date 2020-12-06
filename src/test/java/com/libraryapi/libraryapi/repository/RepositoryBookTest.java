@@ -2,6 +2,8 @@ package com.libraryapi.libraryapi.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import com.libraryapi.libraryapi.model.Book;
 
 import org.junit.jupiter.api.DisplayName;
@@ -49,5 +51,21 @@ public class RepositoryBookTest {
         boolean exists = repository.existsByIsbn(isbn);
         //verify
         assertThat(exists).isFalse();
+    }
+    @Test
+    @DisplayName("Deve obter livro por ID")
+    public void findByIdTest(){
+        //cenario
+        String isbn = "123";
+        Book book = Book.builder()
+            .title("title")
+            .isbn(isbn)
+            .author("author")
+            .build();
+        entityManager.persist(book);
+        //execucao
+        Optional<Book> foundedBook = repository.findById(1L);
+        //verify
+        assertThat(foundedBook.isPresent()).isTrue();
     }
 }
