@@ -23,12 +23,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -248,19 +250,18 @@ public class BookControllerTest {
 
   @Test
   @DisplayName("Deve filtrar livros")
-  public void findBookTest(){
-
+  public void findBooksTest() throws Exception {
     //cenario
     Long id =1L;
     Book book = Book.builder()
     .author(createNewBook().getAuthor())
     .id(id)
     .isbn(createNewBook().getIsbn())
-    .title(createNewBook().getTitle())
+    .title(createNewBook().getTitle()) 
     .build();
 
-    BDDMockito.given( service.find(Mockito.any(Book.class), Mockito.any(Pageable.class)) )
-              .willReturn(  new PageImpl<Book>( Arrays.asList(book) , PageRequest.of( 0 , 100 ), 1) );
+    BDDMockito.given( service.find( Mockito.any(Book.class), Mockito.any(Pageable.class)) )
+              .willReturn( new PageImpl<Book>( Arrays.asList(book), PageRequest.of(0 ,100) , 1) );
     //execucao
     String queryString = String.format( "?title=%s$author%s&page=0&size=100",
             book.getTitle(), book.getAuthor());
@@ -270,7 +271,7 @@ public class BookControllerTest {
       .accept(MediaType.APPLICATION_JSON);
 
     //verify
-    mvc.perform(request)
+    mvc.perform(request) 
       .andExpect( status().isOk())
       .andExpect(jsonPath("content", Matchers.hasSize(1)))
       ;
