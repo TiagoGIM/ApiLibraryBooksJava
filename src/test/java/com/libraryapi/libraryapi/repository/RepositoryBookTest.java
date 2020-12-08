@@ -2,6 +2,8 @@ package com.libraryapi.libraryapi.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import com.libraryapi.libraryapi.model.Book;
 
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +26,7 @@ public class RepositoryBookTest {
     RepositoryBook repository;
 
     @Test
-    @DisplayName("Deve retornar true se se isbn existir no cadastro")
+    @DisplayName("Deve retornar true se isbn já existir no cadastro")
     public void returnTrueWhenIsbnExist() throws Exception{
         //cenario
         String isbn = "123";
@@ -50,4 +52,61 @@ public class RepositoryBookTest {
         //verify
         assertThat(exists).isFalse();
     }
+    @Test
+    @DisplayName("Deve obter livro por ID")
+    public void findByIdTest(){
+        //cenario
+        String isbn = "123";
+        Book Newbook = Book.builder()
+            .title("title")
+            .isbn(isbn)
+            .author("author")
+            .build();
+            Newbook = entityManager.persist(Newbook);
+        //execucao
+        Optional<Book> foundedBook = repository.findById(Newbook.getId());
+        //verify
+        assertThat(foundedBook.isPresent()).isTrue();
+    }
+    @Test
+    @DisplayName("Deve salvar um livro")
+    public void updateTest(){
+        //cenario
+        Book newbook = creatValidBook();
+        newbook.setIsbn("2");
+        //execucao 
+        Book savedBook = repository.save(newbook);
+        //verify
+        assertThat(savedBook.getId()).isNotNull();
+
+    }
+
+    @Test
+    @DisplayName("Deve deletar um livro")
+    public void deleteTest(){
+        //cenario
+        String isbn = "123";
+        Book book = Book.builder()
+            .title("title")
+            .isbn(isbn)
+            .author("author")
+            .build();
+            book = entityManager.persist(book);
+        Book foundedBook = entityManager.find(Book.class, book.getId());
+        repository.delete(foundedBook);
+        //aqui optei por usar o proprio repository 
+        Optional<Book> deletedBook = repository.findById(foundedBook.getId());//entityManager.find(Book.class, book.getId());
+        assertThat(deletedBook).isEmpty();
+
+    }
+
+    private Book creatValidBook(){
+        return Book.builder()
+        .author("author")
+        .title("title")
+        .isbn("isbn")
+        .build();
+      }
+    
+    
 }
