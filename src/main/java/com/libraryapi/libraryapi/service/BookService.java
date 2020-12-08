@@ -6,45 +6,53 @@ import com.libraryapi.libraryapi.exceptions.BusinessException;
 import com.libraryapi.libraryapi.model.Book;
 import com.libraryapi.libraryapi.repository.RepositoryBook;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class BookService implements IBookService {
-    
+
     private RepositoryBook repository;
-    //injeção de dependencia
-    public BookService( RepositoryBook repository){
+
+    // injeção de dependencia
+    public BookService(RepositoryBook repository) {
         this.repository = repository;
     }
 
     @Override
-    public Book save(Book book){
-        if (repository.existsByIsbn(book.getIsbn())){
+    public Book save(Book book) {
+        if (repository.existsByIsbn(book.getIsbn())) {
             throw new BusinessException("Isbn já cadastrado");
         }
         return repository.save(book);
     }
 
     @Override
-    public Optional<Book> getById(Long id){
-        //implementar tratamento OptionalEmpty
+    public Optional<Book> getById(Long id) {
+        // implementar tratamento OptionalEmpty
         return this.repository.findById(id);
     }
-    
+
     @Override
-    public void delete(Book book){
-        if (book == null || book.getId() == null){
+    public void delete(Book book) {
+        if (book == null || book.getId() == null) {
             throw new IllegalArgumentException("Book id can't be null");
         }
         repository.delete(book);
     }
 
     @Override
-    public Book update(Book book){
-        if (book == null || book.getId() == null){
+    public Book update(Book book) {
+        if (book == null || book.getId() == null) {
             throw new IllegalArgumentException("Book id can't be null");
         }
         return repository.save(book);
+    }
+
+    @Override
+    public Page<Book> find(Book filter, Pageable pageRequest) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
