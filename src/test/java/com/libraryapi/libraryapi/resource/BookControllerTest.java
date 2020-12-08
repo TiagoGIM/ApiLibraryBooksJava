@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.modelmapper.ModelMapper;
 
 import java.util.Optional;
+import java.util.Arrays;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.libraryapi.libraryapi.dto.BookDto;
@@ -14,8 +15,9 @@ import com.libraryapi.libraryapi.exceptions.BusinessException;
 import com.libraryapi.libraryapi.model.Book;
 import com.libraryapi.libraryapi.service.IBookService;
 
+
 import org.springframework.http.MediaType;
-import org.assertj.core.util.Arrays;
+//import org.assertj.core.util.Arrays;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -260,8 +262,10 @@ public class BookControllerTest {
     .title(createNewBook().getTitle()) 
     .build();
 
+
+
     BDDMockito.given( service.find( Mockito.any(Book.class), Mockito.any(Pageable.class)) )
-              .willReturn( new PageImpl<Book>( Arrays.asList(book), PageRequest.of(0 ,100) , 1) );
+              .willReturn( new PageImpl<Book>( Arrays.asList(book)  , PageRequest.of(0 ,100) , 1) );
     //execucao
     String queryString = String.format( "?title=%s$author%s&page=0&size=100",
             book.getTitle(), book.getAuthor());
