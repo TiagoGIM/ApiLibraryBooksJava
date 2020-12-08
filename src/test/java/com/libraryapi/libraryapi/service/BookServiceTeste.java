@@ -3,6 +3,8 @@ package com.libraryapi.libraryapi.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
+import java.util.Arrays;
+import java.util.List;
 
 import com.libraryapi.libraryapi.exceptions.BusinessException;
 import com.libraryapi.libraryapi.model.Book;
@@ -15,6 +17,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+//
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+//
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -94,7 +102,7 @@ public class BookServiceTeste {
     //execucao
     Optional<Book> book = service.getById(id);
     //verify
-    assertThat(book.isPresent()).isFalse();
+    assertThat(book).isNotPresent();
   }
 
   @Test
@@ -152,6 +160,30 @@ public class BookServiceTeste {
      () -> service.update(book));
     
     Mockito.verify(repository, Mockito.never()).save(book); //garantir que nunca chame o metodo delete()
+  }
+  @Test
+  @DisplayName("Deve retornar lista de livros")
+  public void listOfBooksTest(){
+    //cenario
+    Book book = creatValidBook();
+
+    PageRequest pageRequest = PageRequest.of(0,10);
+
+    List<Book> mockListOfBook = Arrays.asList(book);
+    Page<Book> page = new PageImpl<Book>(mockListOfBook, pageRequest , 1);
+
+    Mockito.when(repository.findAll(Mockito.any(Example.class) , Mockito.any(PageRequest.class)))
+      .thenReturn(page);
+    //execucao
+    Page<Book> result = service.find(book, pageRequest);
+
+    //verify
+    assertThat(result.getTotalElements()).isEqualTo(1);
+    assertThat(result.getContent()).isEqualTo(mockListOfBook);
+    assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
+    assertThat(result.getPageable().getPageSize()).isEqualTo(10);
+    
+    
   }
 
   private Book creatValidBook(){

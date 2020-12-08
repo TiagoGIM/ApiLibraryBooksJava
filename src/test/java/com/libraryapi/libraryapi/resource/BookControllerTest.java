@@ -262,8 +262,6 @@ public class BookControllerTest {
     .title(createNewBook().getTitle()) 
     .build();
 
-
-
     BDDMockito.given( service.find( Mockito.any(Book.class), Mockito.any(Pageable.class)) )
               .willReturn( new PageImpl<Book>( Arrays.asList(book)  , PageRequest.of(0 ,100) , 1) );
     //execucao
@@ -273,11 +271,13 @@ public class BookControllerTest {
     MockHttpServletRequestBuilder request = MockMvcRequestBuilders
       .get(BOOK_APP.concat(queryString))
       .accept(MediaType.APPLICATION_JSON);
-
     //verify
     mvc.perform(request) 
       .andExpect( status().isOk())
       .andExpect(jsonPath("content", Matchers.hasSize(1)))
+      .andExpect(jsonPath("totalElements").value(1))
+      .andExpect(jsonPath("pageable.pageSize").value(100))
+      .andExpect(jsonPath("pageable.pageNumber").value(0))
       ;
 
   }
