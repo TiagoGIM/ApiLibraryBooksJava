@@ -55,7 +55,6 @@ public class BookService implements IBookService {
 
     @Override
     public Page<Book> find(Book filter, Pageable pageRequest) {
-        // TODO Auto-generated method stub
         Example<Book> example = Example.of(filter, 
         ExampleMatcher
             .matching()
@@ -64,5 +63,11 @@ public class BookService implements IBookService {
             .withStringMatcher(StringMatcher.CONTAINING)
         );  
         return repository.findAll(example, pageRequest);
+    }
+
+    @Override
+    public Optional<Book> getByIsbn(String isbn) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -4,8 +4,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.modelmapper.ModelMapper;
-
 import java.util.Optional;
 import java.util.Arrays;
 
@@ -15,9 +13,8 @@ import com.libraryapi.libraryapi.exceptions.BusinessException;
 import com.libraryapi.libraryapi.model.Book;
 import com.libraryapi.libraryapi.service.IBookService;
 
-
 import org.springframework.http.MediaType;
-//import org.assertj.core.util.Arrays;
+
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -41,7 +37,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@WebMvcTest
+// evita rodas testes de outros controllers
+@WebMvcTest(controllers = BookController.class)
 @AutoConfigureMockMvc
 public class BookControllerTest {
   // route for post methods
@@ -194,10 +191,11 @@ public class BookControllerTest {
       .id(id)
       .title("some book")
       .author("some guy")
-      .isbn("1213212")
+      .isbn("123")
       .build();
     
-      BDDMockito.given(service.getById(id)).willReturn(Optional.of(updatingBook));
+      BDDMockito.given(service.getById(id))
+      .willReturn(Optional.of(updatingBook));
 
       Book updatedBook =Book.builder()
       .id(id)
@@ -206,7 +204,8 @@ public class BookControllerTest {
       .isbn("123")
       .build();
     
-    BDDMockito.given(service.update(updatingBook)).willReturn(updatedBook);
+    BDDMockito.given(service.update(updatingBook))
+    .willReturn(updatedBook);
 
     MockHttpServletRequestBuilder request = MockMvcRequestBuilders
     .put(BOOK_APP.concat("/"+id))
@@ -218,9 +217,9 @@ public class BookControllerTest {
     mvc.perform(request)
       .andExpect(status().isOk())
       .andExpect(jsonPath("id").value(id))
-      .andExpect(jsonPath("title").value(createNewBook().getTitle()))
-      .andExpect(jsonPath("author").value(createNewBook().getAuthor()))
-      .andExpect(jsonPath("isbn").value(createNewBook().getIsbn()))
+      .andExpect(jsonPath("title").value(updatedBook.getTitle()))
+      .andExpect(jsonPath("author").value(updatedBook.getAuthor()))
+      .andExpect(jsonPath("isbn").value(updatedBook.getIsbn()))
       ;
   }
 
