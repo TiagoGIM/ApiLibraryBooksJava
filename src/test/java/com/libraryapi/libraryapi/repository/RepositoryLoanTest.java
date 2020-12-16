@@ -12,6 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -25,25 +27,50 @@ public class RepositoryLoanTest {
     @Autowired
     RepositoryLoan repository;
 
-    @Test@DisplayName("Deve verificar se existe emprestimo nao retornado para o livro")
+    @Test
+    @DisplayName("Deve verificar se existe emprestimo nao retornado para o livro")
     public void existsByBookAndNotReturnedTest(){
         // cenario
-        Book book = creatValidBook();
-        entityManager.persist(book);
-
-        Loan loan = Loan.builder()
-        .costumer("costumer")
-        .book(book)
-        .loanDate(LocalDate.now())
-        .build();
-        entityManager.persist(loan);
+        Loan loan = createLoanPersistMock();
+        Book book = loan.getBook();
+         
         //execucao
         boolean exists = repository.existsByBookAndNotReturned(book);
         Assertions.assertThat(exists).isTrue();
 
     }
 
-    public static Book creatValidBook(){
+    @Test
+    @DisplayName("Deve buscar por propriedades isbn ou costumer")
+    public void findByBookIsbnOrCustomerTest(){
+        // cenario
+    Loan loan = createLoanPersistMock();
+
+    Page<Loan> result = repository.findByBookIsbnOrCustomer("isbm", "customer", PageRequest.of(0,10));
+            //verify
+
+    Assertions.assertThat(result.getContent()).hasSize(1);
+    Assertions.assertThat(result.getPageable().getPageNumber()).isZero();
+    Assertions.assertThat(result.getPageable().getPageSize()).isEqualTo(10);
+    Assertions.assertThat(result.getTotalElements()).isEqualTo(1);
+    Assertions.assertThat(result.getContent()).contains(loan);
+    }
+
+    public Loan createLoanPersistMock(){
+
+        Book book = creatValidBook();
+        entityManager.persist(book);
+
+        Loan loan = Loan.builder()
+        .customer("customer")
+        .book(book)
+        .loanDate(LocalDate.now())
+        .build();
+        entityManager.persist(loan);
+        return loan;
+    }
+
+    public Book creatValidBook(){
         return Book.builder()
         .author("author")
         .title("title")
