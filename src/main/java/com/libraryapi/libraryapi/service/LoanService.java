@@ -42,7 +42,7 @@ public class LoanService implements ILoanService {
 
     @Override
     public Page<Loan> find(LoanFilterDTO filter, Pageable pageRequest) {
-
+        //provavelmente vai dar erro devido a ter escrito "costumer"
         return repository.findByBookIsbnOrCustomer(filter.getIsbm(), filter.getCostumer(), pageRequest);
     }
     

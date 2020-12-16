@@ -36,7 +36,7 @@ public class LoanController {
 
     private final ILoanService service;
     private final IBookService bookService;
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

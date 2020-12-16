@@ -1,6 +1,5 @@
 package com.libraryapi.libraryapi.resource;
 
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDate;
