@@ -1,6 +1,8 @@
 package com.libraryapi.libraryapi.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.Optional;
 import java.util.Arrays;
@@ -89,7 +91,7 @@ public class BookServiceTeste {
     //execucao
     Optional<Book> foundBook = service.getById(id);
     //verify
-    assertThat(foundBook.isPresent()).isTrue();
+    assertThat(foundBook).isPresent();
   }
 
   @Test
@@ -180,17 +182,37 @@ public class BookServiceTeste {
     //verify
     assertThat(result.getTotalElements()).isEqualTo(1);
     assertThat(result.getContent()).isEqualTo(mockListOfBook);
-    assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
+    assertThat(result.getPageable().getPageNumber()).isZero();
     assertThat(result.getPageable().getPageSize()).isEqualTo(10);
     
     
+  }
+
+  @Test
+  @DisplayName("deve obter livro por isbm")
+  public void getBookByIsbmTest(){
+
+    Book book = creatValidBook();
+    String isbn = "123";
+    Long id = 1L;
+    book.setId(id);
+
+    Mockito.when(repository.findByIsbn(isbn)).thenReturn(Optional.of(book));
+
+    Optional<Book> bookGeted = service.getByIsbn(isbn);
+
+    verify(repository, times(1)).findByIsbn(isbn);
+
+    assertThat(bookGeted).isPresent();
+    assertThat(bookGeted.get().getId()).isEqualTo(id);
+    assertThat(bookGeted.get().getIsbn()).isEqualTo(isbn);     
   }
 
   private Book creatValidBook(){
     return Book.builder()
     .author("author")
     .title("title")
-    .isbn("isbn")
+    .isbn("123")
     .build();
   }
 }

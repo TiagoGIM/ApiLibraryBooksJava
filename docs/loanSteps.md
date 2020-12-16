@@ -43,4 +43,27 @@ criamos outro handler em ApiErros
 
 ## Bugs & fixs
 
-Ao tentar usar um objeto para mockar um LoanDto no LoanControllerTest como foi feito no BoookControllerTest o teste não passou. Passsei um Builder e rolou.
+Ao tentar usar um objeto para mockar um LoanDto no LoanControllerTest como foi feito no BoookControllerTest o teste não passou. Passsei um Builder e rolou. (era o objeto que tinha um isbm diferente do esperado no test)
+
+## Teste de serviço
+
+para um dos testes de emprestimo foi criado um mock de getBookByIsbm no BookService, ou seja, agora precisamos implementar esse metodo para poder realizar os testes de integração no loan corretamente.
+
+### LoanServiceTest Teste de integração fron scratch
+0- criar testes
+1- Criar repositorio do serviço
+2- criar interface do serviço
+3- criar serviço
+
+-- criar cenários, mockar respositorio, instanciar interface de serviço, fazer setup com Construtor do serviço.
+
+-- Extender JParepository
+-- criar interface com metodos a serem testados
+-- implementar interface e construtor injetando repository.
+
+-> erros de negocio em serviços
+
+O teste de livro já emprestado vai retornar a execessao criada no controller, ou seja, apenas precisamos capturar a execção no teste do serviço. catchThroewable()
+
+criado primeiro testes de erro foi retornado erro nenhum devido a nao ter serviço implementado.
+

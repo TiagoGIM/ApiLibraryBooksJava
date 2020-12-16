@@ -100,7 +100,7 @@ public class RepositoryBookTest {
 
     }
 
-    private Book creatValidBook(){
+    public static Book creatValidBook(){
         return Book.builder()
         .author("author")
         .title("title")
