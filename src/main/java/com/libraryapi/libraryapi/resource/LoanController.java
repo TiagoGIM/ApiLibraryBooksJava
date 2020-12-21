@@ -52,7 +52,7 @@ public class LoanController {
         .builder()
         .book(book)
         .loanDate(LocalDate.now())
-        .costumer(loanDto.getCostumer())
+        .customer(loanDto.getCustomer())
         .build();
 
         entity = service.save(entity);

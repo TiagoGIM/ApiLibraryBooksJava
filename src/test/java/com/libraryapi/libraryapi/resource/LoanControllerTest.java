@@ -67,7 +67,7 @@ public class LoanControllerTest {
 
             Loan loan = Loan.builder()
             .id(idEmprestimo)
-            .costumer("costumer")
+            .customer("customer")
             .book(returnedBook)
             .loanDate(LocalDate.now())
             .build()
@@ -95,7 +95,7 @@ public class LoanControllerTest {
     @DisplayName("Deve dar erro ao tentar criar emprestimo com isbm inexistente")
     public void createLoanNoExistentIsbm() throws Exception {
         //cenario
-        LoanDto dto = LoanDto.builder().costumer("costumer").isbm("123").build();
+        LoanDto dto = LoanDto.builder().customer("customer").isbm("123").build();
         String json = new ObjectMapper().writeValueAsString(dto);
        
         BDDMockito.given(bookService.getByIsbn("123"))
@@ -118,7 +118,7 @@ public class LoanControllerTest {
 @DisplayName("Deve dar erro ao tentar criar emprestimo com isbm já emprestado")
 public void LoanedBookErrorOnCreatedLoanTest() throws Exception {
     //cenario
-    LoanDto dto = LoanDto.builder().costumer("costumer").isbm("123").build();
+    LoanDto dto = LoanDto.builder().customer("customer").isbm("123").build();
     String json = new ObjectMapper().writeValueAsString(dto);
    
     Book returnedBook = Book.builder().isbn("123").build();
@@ -173,7 +173,7 @@ public void returnedBookTest() throws Exception{
         Loan loan = Loan.builder()
         .id(1L)
         .returned(true)
-        .costumer("costumer") //customer
+        .customer("customer") //customer
         .book(book)
         .loanDate(LocalDate.now())
         .build();
@@ -181,8 +181,8 @@ public void returnedBookTest() throws Exception{
         BDDMockito.given( loanService.find( Mockito.any(LoanFilterDTO.class), Mockito.any(Pageable.class)) )
                 .willReturn( new PageImpl<Loan>( Arrays.asList(loan)  , PageRequest.of(0 ,10) , 1) );
         //execucao
-        String queryString = String.format( "?isbn=%s&costumer=%s&page=0&size=10",
-            book.getIsbn(), loan.getCostumer());
+        String queryString = String.format( "?isbn=%s&customer=%s&page=0&size=10",
+            book.getIsbn(), loan.getCustomer());
         
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
         .get(LOAN_APP.concat(queryString))
@@ -201,7 +201,7 @@ public void returnedBookTest() throws Exception{
     private LoanDto loanDtoMock(){
         return LoanDto
         .builder()
-        .costumer("leitor")
+        .customer("leitor")
         .isbm("123")
         .build();
     }

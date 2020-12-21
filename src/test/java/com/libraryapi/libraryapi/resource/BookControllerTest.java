@@ -12,6 +12,7 @@ import com.libraryapi.libraryapi.dto.BookDto;
 import com.libraryapi.libraryapi.exceptions.BusinessException;
 import com.libraryapi.libraryapi.model.Book;
 import com.libraryapi.libraryapi.service.IBookService;
+import com.libraryapi.libraryapi.service.ILoanService;
 
 import org.springframework.http.MediaType;
 
@@ -37,7 +38,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-// evita rodas testes de outros controllers
 @WebMvcTest(controllers = BookController.class)
 @AutoConfigureMockMvc
 public class BookControllerTest {
@@ -48,7 +48,10 @@ public class BookControllerTest {
   MockMvc mvc;
 
   @MockBean
-  IBookService service;
+  private IBookService service;
+
+  @MockBean
+  private ILoanService loanService;
 
   @Test
   @DisplayName("Deve criar um livro com sucesso")

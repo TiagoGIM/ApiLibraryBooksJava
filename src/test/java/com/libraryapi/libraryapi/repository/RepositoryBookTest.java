@@ -95,7 +95,7 @@ public class RepositoryBookTest {
         Book foundedBook = entityManager.find(Book.class, book.getId());
         repository.delete(foundedBook);
         //aqui optei por usar o proprio repository 
-        Optional<Book> deletedBook = repository.findById(foundedBook.getId());//entityManager.find(Book.class, book.getId());
+        Optional<Book> deletedBook = repository.findById(foundedBook.getId());
         assertThat(deletedBook).isEmpty();
 
     }

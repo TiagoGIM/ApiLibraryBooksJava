@@ -184,8 +184,7 @@ public class BookServiceTeste {
     assertThat(result.getContent()).isEqualTo(mockListOfBook);
     assertThat(result.getPageable().getPageNumber()).isZero();
     assertThat(result.getPageable().getPageSize()).isEqualTo(10);
-    
-    
+   
   }
 
   @Test
