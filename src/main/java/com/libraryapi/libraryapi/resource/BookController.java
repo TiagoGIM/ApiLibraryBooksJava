@@ -31,12 +31,17 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 
 @RestController
 @RequestMapping("/api/books")
 @RequiredArgsConstructor
+@Api("BOOK API")
 public class BookController {
 
   private final ILoanService serviceLoan;
@@ -45,6 +50,7 @@ public class BookController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
+  @ApiOperation("CREATE A BOOK")
   public BookDto create(@RequestBody @Valid BookDto dto) {
     // mapeia todas as props de mesmo nome.
     Book entity = modelMapper.map(dto, Book.class);
@@ -54,6 +60,7 @@ public class BookController {
   }
 
   @GetMapping("/{id}")
+  @ApiOperation("FIND BOOK BY ID")
   public BookDto findByid(@PathVariable Long id) {
     return service.getById(id).map(book -> modelMapper.map(book, BookDto.class))
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -76,6 +83,10 @@ public class BookController {
 
   @DeleteMapping("{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
+  @ApiResponses({
+    @ApiResponse(code =204,message="deleted with sucess"),
+    @ApiResponse(code =401, message ="operation invalid")
+  })
   public void delete(@PathVariable Long id){
     Book book = service.getById(id)
     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND))
