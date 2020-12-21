@@ -33,15 +33,15 @@ import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 
+
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/books")
+@RequiredArgsConstructor
 public class BookController {
 
-  private final IBookService service;
   private final ILoanService serviceLoan;
+  private final IBookService service;
   private final ModelMapper modelMapper;
-
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
