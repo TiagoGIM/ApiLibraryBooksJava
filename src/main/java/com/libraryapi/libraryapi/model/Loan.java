@@ -2,7 +2,7 @@ package com.libraryapi.libraryapi.model;
 
 import java.time.LocalDate;
 
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,6 +27,8 @@ public class Loan {
     private Long id;
 
     private String customer;
+
+    private String customerEmail;
 
     @JoinColumn(name="id_book")
     @ManyToOne

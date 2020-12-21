@@ -1,6 +1,7 @@
 package com.libraryapi.libraryapi.repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.libraryapi.libraryapi.model.Book;
 import com.libraryapi.libraryapi.model.Loan;
@@ -31,7 +32,7 @@ public class RepositoryLoanTest {
     @DisplayName("Deve verificar se existe emprestimo nao retornado para o livro")
     public void existsByBookAndNotReturnedTest(){
         // cenario
-        Loan loan = createLoanPersistMock();
+        Loan loan = createLoanPersistMock(LocalDate.now());
         Book book = loan.getBook();
          
         //execucao
@@ -44,7 +45,7 @@ public class RepositoryLoanTest {
     @DisplayName("Deve buscar por propriedades isbn ou costumer")
     public void findByBookIsbnOrCustomerTest(){
         // cenario
-    Loan loan = createLoanPersistMock();
+    Loan loan = createLoanPersistMock(LocalDate.now());
 
     Page<Loan> result = repository.findByBookIsbnOrCustomer("isbm", "customer", PageRequest.of(0,10));
             //verify
@@ -56,7 +57,28 @@ public class RepositoryLoanTest {
     Assertions.assertThat(result.getContent()).contains(loan);
     }
 
-    public Loan createLoanPersistMock(){
+    @Test
+    @DisplayName("Deve retornar emprestimos com ate 3 dias de sem devolucao")
+    public void findByLoanDateLessThanAndNotReturnedTest(){
+    // cenario
+    Loan loan = createLoanPersistMock(LocalDate.now().minusDays(5));
+    //execution
+    List<Loan> result = repository.findByLoanDateLessThanAndNotReturned(LocalDate.now().minusDays(4));
+    //verify
+    Assertions.assertThat(result).hasSize(1).contains(loan);
+    }
+    @Test
+    @DisplayName("Não deve retornar nenhum emprestimo.")
+    public void NotfindByLoanDateLessThanAndNotReturnedTest(){
+    // cenario
+    createLoanPersistMock(LocalDate.now());
+    //execution
+    List<Loan> result = repository.findByLoanDateLessThanAndNotReturned(LocalDate.now().minusDays(4));
+    //verify
+    Assertions.assertThat(result).isEmpty();
+    }
+
+    public Loan createLoanPersistMock(LocalDate date){
 
         Book book = creatValidBook();
         entityManager.persist(book);
@@ -64,7 +86,8 @@ public class RepositoryLoanTest {
         Loan loan = Loan.builder()
         .customer("customer")
         .book(book)
-        .loanDate(LocalDate.now())
+        //.customerEmail("customerEmail")
+        .loanDate(date)
         .build();
         entityManager.persist(loan);
         return loan;
