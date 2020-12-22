@@ -1,7 +1,6 @@
 language: java
-sudo: true
 jdk:
-  - oraclejdk8
+  - openjdk11
 dist: trusty
 before_install:
   - chmod +x mvnw
