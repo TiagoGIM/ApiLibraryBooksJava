@@ -4,6 +4,3 @@ jdk:
 dist: trusty
 before_install:
   - chmod +x mvnw
-deploy:
-  provider: heroku
-  app: emprestelivro-api # optional if it's the same as your repo name
