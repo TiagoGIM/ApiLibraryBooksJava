@@ -7,5 +7,3 @@ before_install:
 deploy:
   provider: heroku
   app: emprestelivro-api # optional if it's the same as your repo name
-  api_key: "fdb9d2ae-f549-4bb2-b3f6-467a42fd5a49"
-  on: develop
