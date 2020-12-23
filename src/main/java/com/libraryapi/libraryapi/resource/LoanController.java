@@ -42,10 +42,10 @@ public class LoanController {
     @ResponseStatus(HttpStatus.CREATED)
     public Long createdLoan(@RequestBody LoanDto loanDto) {
 
-        Book book = bookService.getByIsbn(loanDto.getIsbm())
+        Book book = bookService.getByIsbn(loanDto.getIsbn())
         .orElseThrow(() -> new ResponseStatusException(
             HttpStatus.BAD_REQUEST,
-            "Book not founded for isbm riquired")
+            "Book not founded for isbn riquired")
         );
 
         Loan entity = Loan

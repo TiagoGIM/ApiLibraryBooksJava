@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class LoanDto {
   private Long id;
   @NotEmpty
-  private String isbm;
+  private String isbn;
   @NotEmpty
   private String customer;
   private BookDto book;

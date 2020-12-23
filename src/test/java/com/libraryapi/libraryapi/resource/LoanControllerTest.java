@@ -92,10 +92,10 @@ public class LoanControllerTest {
     }
 
     @Test
-    @DisplayName("Deve dar erro ao tentar criar emprestimo com isbm inexistente")
-    public void createLoanNoExistentIsbm() throws Exception {
+    @DisplayName("Deve dar erro ao tentar criar emprestimo com isbn inexistente")
+    public void createLoanNoExistentisbn() throws Exception {
         //cenario
-        LoanDto dto = LoanDto.builder().customer("customer").isbm("123").build();
+        LoanDto dto = LoanDto.builder().customer("customer").isbn("123").build();
         String json = new ObjectMapper().writeValueAsString(dto);
        
         BDDMockito.given(bookService.getByIsbn("123"))
@@ -111,14 +111,14 @@ public class LoanControllerTest {
         mvc.perform(request)
         .andExpect( status().isBadRequest() )
         .andExpect( jsonPath( "errors", Matchers.hasSize(1) ))
-        .andExpect( jsonPath( "errors[0]").value("Book not founded for isbm riquired"))
+        .andExpect( jsonPath( "errors[0]").value("Book not founded for isbn riquired"))
         ;  
 }
 @Test
-@DisplayName("Deve dar erro ao tentar criar emprestimo com isbm já emprestado")
+@DisplayName("Deve dar erro ao tentar criar emprestimo com isbn já emprestado")
 public void LoanedBookErrorOnCreatedLoanTest() throws Exception {
     //cenario
-    LoanDto dto = LoanDto.builder().customer("customer").isbm("123").build();
+    LoanDto dto = LoanDto.builder().customer("customer").isbn("123").build();
     String json = new ObjectMapper().writeValueAsString(dto);
    
     Book returnedBook = Book.builder().isbn("123").build();
@@ -202,7 +202,7 @@ public void returnedBookTest() throws Exception{
         return LoanDto
         .builder()
         .customer("leitor")
-        .isbm("123")
+        .isbn("123")
         .build();
     }
 }
