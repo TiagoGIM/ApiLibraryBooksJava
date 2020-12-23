@@ -69,7 +69,7 @@ public class BookController {
   }
 
   @GetMapping
-  public PageImpl<BookDto> find(BookDto dto, Pageable pageRequest) {
+  public Page<BookDto> find(BookDto dto, Pageable pageRequest) {
 
     Book filter = modelMapper.map(dto, Book.class);
 
@@ -82,6 +82,12 @@ public class BookController {
 
     return new PageImpl<BookDto>(listOfBooks, pageRequest, result.getTotalElements() );
   }
+
+  @GetMapping("/hello")
+  public String hello(){
+    return "hello";
+  }
+
 
   @DeleteMapping("{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
